@@ -1,10 +1,10 @@
 /* eslint-disable */
 
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { AuthContext } from "../../context/AuthContext";
 
-const Register = () => {
+const Register = ({ history }) => {
   const [name, setName] = useState("Hamzah");
   const [error, setError] = useState("");
   const [email, setEmail] = useState("Hamzah@email.com");
@@ -28,6 +28,7 @@ const Register = () => {
       .then((res) => {
         console.log(res);
         loginFunc(res.data.token, res.data.user);
+        history.push("/");
       })
       .catch((err) => {
         // console.log(body);
@@ -38,6 +39,11 @@ const Register = () => {
     // setEmail("");
     // setPassword("");
   };
+  useEffect(() => {
+    if (isLoggedIn) {
+      history.push("/");
+    }
+  }, []);
   return (
     <div>
       <h1>Register</h1>

@@ -1,9 +1,9 @@
 /* eslint-disable */
 
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { AuthContext } from "../../context/AuthContext";
-const Login = () => {
+const Login = ({ history }) => {
   const [error, setError] = useState("");
   const [email, setEmail] = useState("Hamzah@email.com");
   const [password, setPassword] = useState("12345");
@@ -25,6 +25,7 @@ const Login = () => {
       .then((res) => {
         // console.log(res.data);
         loginFunc(res.data.token, res.data.user);
+        history.push("/");
       })
       .catch((err) => {
         console.log(err);
@@ -34,6 +35,12 @@ const Login = () => {
     // setEmail("");
     // setPassword("");
   };
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      history.push("/");
+    }
+  }, []);
   return (
     <div>
       <h1>Login</h1>

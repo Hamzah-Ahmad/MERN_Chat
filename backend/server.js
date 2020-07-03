@@ -9,7 +9,7 @@ app.use(cors());
 
 const server = http.createServer(app);
 const io = socketio(server);
-const authMiddleware = require("./middleware/auth-middleware");
+// const authMiddleware = require("./middleware/auth-middleware");
 
 const PORT = process.env.PORT || 5000;
 
@@ -27,10 +27,19 @@ app.use(express.json());
 
 //Setting up web sockets
 io.on("connection", (socket) => {
-  console.log("Server method ran");
-  socket.on("message", (message) => {
-    io.emit("message", message);
+  socket.on("joinRoom", ({ user, room }) => {
+    socket.join(room);
+    socket.broadcast
+      .to(room)
+      .emit("welcomeUser", `${user.name} has joined the room`);
   });
+  socket.on("leaveRoom", (room) => {
+    socket.leave(room);
+  });
+  socket.on("message", (message) => {
+    io.to(message.room).emit("message", message);
+  });
+  socket.on("disconnect", () => console.log("User disconnected"));
 });
 
 //Importing route files

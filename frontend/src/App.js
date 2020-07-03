@@ -1,11 +1,12 @@
 /* eslint-disable */
 import axios from "axios";
 import React, { useEffect, useContext } from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, withRouter } from "react-router-dom";
 
 import "./App.css";
 import AuthScreen from "./screens/Auth/AuthScreen";
-import Homescreen from "./screens/Homescreen";
+import HomeScreen from "./screens/HomeScreen";
+import ChatScreen from "./screens/ChatScreen";
 
 import { AuthContext } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -23,15 +24,17 @@ function App(props) {
     const storedData = JSON.parse(localStorage.getItem("userData"));
     if (storedData && storedData.token) {
       loginFunc(storedData.token, storedData.user);
+      props.history.replace(props.location.pathname);
     }
   }, []);
 
   return (
     <div className="App">
-      <ProtectedRoute exact path="/" component={Homescreen} />
       <Route exact path="/auth" component={AuthScreen} />
+      <ProtectedRoute exact path="/" component={HomeScreen} />
+      <ProtectedRoute exact path="/chat/:room" component={ChatScreen} />
     </div>
   );
 }
 
-export default App;
+export default withRouter(App);

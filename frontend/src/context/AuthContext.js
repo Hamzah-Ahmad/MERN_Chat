@@ -1,5 +1,6 @@
+/* eslint-disable */
+
 import React, { useState, createContext } from "react";
-import { withRouter } from "react-router-dom";
 
 export const AuthContext = createContext();
 
@@ -16,7 +17,7 @@ const AuthContextProvider = (props) => {
       "userData",
       JSON.stringify({ user: userArg, token: tokenArg })
     );
-    props.history.push("/"); //AuthContext Provider is getting history in props becasue we used withContext whjile exporting it. We also had to wrap the AuthContextProvider tags with BrowserRouter tags to allow withContext to be used AuthContexxtProvider.And AuthContextProvider wrapped the root App in index.js so that we could access AuthContext in the main root App. We did this because we need to run the login func in the root level on each refresh
+    // props.history.push("/"); //AuthContext Provider is getting history in props becasue we used withContext while exporting it. We also had to wrap the AuthContextProvider tags with BrowserRouter tags to allow withContext to be used AuthContexxtProvider.And AuthContextProvider wrapped the root App in index.js so that we could access AuthContext in the main root App. We did this because we need to run the login func in the root level on each refresh
   };
 
   const logoutFunc = () => {
@@ -24,7 +25,7 @@ const AuthContextProvider = (props) => {
     setToken("");
     setUser("");
     localStorage.removeItem("userData");
-    props.history.push("/auth");
+    // props.history.push("/auth"); //We don't need this, since protectedRoute automatically pushes us to main screen on logout because the authState isLoggedIn is set to false
   };
   // console.log(props);
   return (
@@ -36,4 +37,4 @@ const AuthContextProvider = (props) => {
   );
 };
 
-export default withRouter(AuthContextProvider);
+export default AuthContextProvider;
