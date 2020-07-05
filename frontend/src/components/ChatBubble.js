@@ -1,19 +1,30 @@
 import React from "react";
 
-const ChatBubble = ({ user, message }) => {
+const ChatBubble = ({ user, message, sentMsg }) => {
   return (
-    <div style={styles.chatbubble}>
-      <div style={styles.username}>{user}:</div>
-      <span style={styles.messageText}>{message}</span>
+    <div>
+      <div style={!sentMsg ? style.chatbubble : style.sentMsgBubble}>
+        <div style={style.username}>{user}:</div>
+        <span style={style.messageText}>{message}</span>
+      </div>
     </div>
   );
 };
-const styles = {
+const style = {
   chatbubble: {
     marginBottom: 20,
     padding: 10,
     border: "0.1px solid #33a0ff",
-    borderRadius: "5px 20px 5px",
+    borderRadius: "20px",
+    width: "60%",
+  },
+  sentMsgBubble: {
+    marginBottom: 20,
+    padding: 10,
+    border: "0.1px solid red",
+    borderRadius: "20px",
+    width: "60%",
+    marginLeft: "auto",
   },
   username: {
     fontSize: 12,

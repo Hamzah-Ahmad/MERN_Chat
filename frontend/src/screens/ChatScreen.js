@@ -13,6 +13,10 @@ const ChatScreen = (props) => {
     AuthContext
   );
   const [message, setMessage] = useState("");
+  const [alertText, setAlertText] = useState(
+    "Hamzah Ahmad has joined the chat"
+  );
+  const [alertOpacity, setAlertOpacity] = useState(0);
   const room = props.match.params.room;
   const messagesRef = useRef();
   const submitHandler = (e) => {
@@ -42,18 +46,29 @@ const ChatScreen = (props) => {
     let mounted = true;
     socket.emit("joinRoom", { user, room });
     socket.on("message", (message) => {
+      console.log(message.user.email);
+      console.log(user.email);
       setMessages((messages) => [
         ...messages,
         { user: message.user, message: message.message },
       ]);
-      messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
     });
-    socket.on("welcomeUser", (msg) => console.log(msg));
+    socket.on("welcomeUser", (msg) => {
+      setAlertText(msg);
+      setAlertOpacity(0.8);
+      setTimeout(() => {
+        setAlertOpacity(0);
+      }, 2000);
+    });
     return () => {
       socket.emit("leaveRoom", room);
       mounted = false;
     };
   }, []);
+
+  useEffect(() => {
+    messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
+  });
 
   // useEffect(() => console.log(props));
 
@@ -74,6 +89,9 @@ const ChatScreen = (props) => {
           </Button>
         </div>
       </div>
+      <div style={{ ...style.alertBox, opacity: alertOpacity }}>
+        {alertText}
+      </div>
       <div style={style.chatContainer}>
         <div style={style.messagesContainer} ref={messagesRef}>
           {messages.map((msg) => (
@@ -81,6 +99,7 @@ const ChatScreen = (props) => {
               key={Math.random()}
               user={msg.user.name}
               message={msg.message}
+              sentMsg={msg.user.email === user.email}
             />
           ))}
         </div>
@@ -110,6 +129,14 @@ const ChatScreen = (props) => {
 };
 
 const style = {
+  alertBox: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    borderRadius: 10,
+    padding: 10,
+    backgroundColor: "#f7f7f7",
+  },
   button: {
     background: "#407ad6",
     color: "#fff",
@@ -153,6 +180,8 @@ const style = {
     borderRadius: 20,
     border: "1px solid #f7f7f7",
     background: "#f7f7f7",
+    display: "flex",
+    flexDirection: "column",
   },
   navbar: {
     display: "flex",
