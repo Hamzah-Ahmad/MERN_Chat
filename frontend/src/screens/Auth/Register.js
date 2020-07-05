@@ -1,14 +1,18 @@
 /* eslint-disable */
 
-import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
+import React, { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
 
-const Register = ({ history }) => {
-  const [name, setName] = useState("Hamzah");
+// Material UI imports
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+
+const Register = ({ history, mediaMatch }) => {
+  const [name, setName] = useState("");
   const [error, setError] = useState("");
-  const [email, setEmail] = useState("Hamzah@email.com");
-  const [password, setPassword] = useState("12345");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const { isLoggedIn, token, user, loginFunc, logoutFunc } = useContext(
     AuthContext
@@ -45,35 +49,92 @@ const Register = ({ history }) => {
     }
   }, []);
   return (
-    <div>
-      <h1>Register</h1>
-      {error && <div>{error.msg}</div>}
+    <div style={mediaMatch ? style.container : style.mobileContainer}>
+      <div style={mediaMatch ? style.title : style.mobileTitle}>Register</div>
+      {error && <div style={style.error}>{error.msg}</div>}
+
       <form onSubmit={handleSubmit}>
-        <input
+        <TextField
+          style={style.textField}
+          variant="outlined"
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Name"
         />
-        <br />
-        <input
+        <TextField
+          style={style.textField}
+          variant="outlined"
           type="text"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
         />
-        <br />
-        <input
+        <TextField
+          style={style.textField}
+          variant="outlined"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
         />
-        <br />
-        <button>Submit</button>
+        <Button
+          variant="contained"
+          color="primary"
+          type="submit"
+          style={mediaMatch ? style.button : style.mobileButton}
+        >
+          Submit
+        </Button>
       </form>
     </div>
   );
 };
 
+const style = {
+  button: {
+    width: "100%",
+    position: "absolute",
+    height: "60px",
+    bottom: 0,
+    left: 0,
+    backgroundColor: "#407ad6",
+  },
+  container: {
+    borderRadius: 20,
+    padding: 50,
+    margin: 50,
+    marginTop: "5%",
+    height: "65%",
+    backgroundColor: "#f2f2f2",
+    width: "50%",
+    position: "relative",
+  },
+  error: {
+    color: "#a33122",
+    textAlign: "center",
+    marginTop: 0,
+  },
+  mobileButton: {
+    width: "100%",
+    backgroundColor: "#407ad6",
+  },
+  mobileContainer: {
+    // borderRadius: 10,
+    padding: 25,
+    margin: 0,
+    backgroundColor: "#f2f2f2",
+    position: "relative",
+  },
+  mobileTitle: { fontSize: 30, marginBottom: 10, textAlign: "center" },
+  textField: {
+    paddingBottom: 15,
+    width: "100%",
+  },
+  title: {
+    fontSize: 45,
+    marginBottom: 10,
+    textAlign: "center",
+  },
+};
 export default Register;

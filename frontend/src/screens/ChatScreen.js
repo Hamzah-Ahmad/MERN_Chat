@@ -5,13 +5,15 @@ const socket = io("http://localhost:5000");
 import { AuthContext } from "../context/AuthContext";
 import ChatBubble from "../components/ChatBubble";
 
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+
 const ChatScreen = (props) => {
   const { isLoggedIn, token, user, loginFunc, logoutFunc } = useContext(
     AuthContext
   );
   const [message, setMessage] = useState("");
   const room = props.match.params.room;
-
   const submitHandler = (e) => {
     e.preventDefault();
     socket.emit("message", { user, message, room });
@@ -19,8 +21,15 @@ const ChatScreen = (props) => {
   };
   const [messages, setMessages] = useState([
     { user: { name: "User A" }, message: "User A here" },
-    { user: { name: "User B" }, message: "User B present" },
-    { user: { name: "User C" }, message: "User C here" },
+    { user: { name: "User A" }, message: "User A here" },
+    { user: { name: "User A" }, message: "User A here" },
+    { user: { name: "User A" }, message: "User A here" },
+    { user: { name: "User A" }, message: "User A here" },
+    { user: { name: "User A" }, message: "User A here" },
+    { user: { name: "User A" }, message: "User A here" },
+    { user: { name: "User A" }, message: "User A here" },
+    { user: { name: "User A" }, message: "User A here" },
+    { user: { name: "User A" }, message: "User A here" },
   ]);
 
   const leaveRoom = () => {
@@ -51,41 +60,103 @@ const ChatScreen = (props) => {
   // }, [room]);
 
   return (
-    <div>
-      <h1>Chat Room __ {user.name}</h1>
-      <button onClick={logoutFunc}>Logout</button>
-      <button onClick={leaveRoom}>Leave Room</button>
-      {messages.map((msg) => (
-        <ChatBubble
-          key={Math.random()}
-          user={msg.user.name}
-          message={msg.message}
-        />
-      ))}
-      <form onSubmit={submitHandler}>
-        <input
-          type="text"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Message"
-          style={styles.input}
-        />
-        <button style={styles.button}>Submit</button>
-      </form>
+    <div style={style.container}>
+      <div style={style.navbar}>
+        <div style={style.logo}>ChatRoomz</div>
+        <div>
+          <Button onClick={leaveRoom} style={{ color: "#fff" }}>
+            Leave Room
+          </Button>
+          <Button onClick={logoutFunc} style={{ color: "#fff" }}>
+            Logout
+          </Button>
+        </div>
+      </div>
+      <div style={style.chatContainer}>
+        <div style={style.messagesContainer}>
+          {messages.map((msg) => (
+            <ChatBubble
+              key={Math.random()}
+              user={msg.user.name}
+              message={msg.message}
+            />
+          ))}
+        </div>
+        <form onSubmit={submitHandler} style={{ marginTop: 40 }}>
+          <TextField
+            type="text"
+            multiline
+            rowsMax={2}
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Message"
+            variant="outlined"
+            style={style.input}
+          />
+          <Button
+            variant="contained"
+            type="submit"
+            style={message ? style.button : style.disabledButton}
+            disabled={message ? false : true}
+          >
+            Submit
+          </Button>
+        </form>
+      </div>
     </div>
   );
 };
 
-const styles = {
-  button: {},
-  input: {
-    padding: 10,
-    marginRight: 10,
-    borderRadius: 10,
+const style = {
+  button: {
+    background: "#407ad6",
+    color: "#fff",
+    width: "100%",
+    marginTop: 10,
   },
-  ul: {
-    listStyle: "none",
-    padding: 0,
+  chatContainer: {
+    display: "flex",
+    flexDirection: "column",
+    width: "60%",
+    padding: 60,
+    margin: "auto",
+    borderRadius: 20,
+    backgroundColor: "#edf4ff",
+    height: "70vh",
+  },
+  container: {
+    width: "80%",
+  },
+  disabledButton: {
+    background: "#e0e0e0",
+    color: "#fff",
+    width: "100%",
+    marginTop: 10,
+  },
+  input: {
+    width: "100%",
+    marginTop: 10,
+    background: "#f7f7f7",
+  },
+  logo: {
+    color: "#fff",
+    fontSize: 30,
+    fontWeight: "bold",
+    spaceBetween: "1.5",
+  },
+  messagesContainer: {
+    overflow: "auto",
+    padding: 30,
+    paddingRight: 60,
+    borderRadius: 20,
+    border: "1px solid #f7f7f7",
+    background: "#f7f7f7",
+  },
+  navbar: {
+    display: "flex",
+    justifyContent: "space-around",
+    alignItems: "end",
+    padding: "30px 0px",
   },
 };
 

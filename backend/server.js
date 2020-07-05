@@ -39,7 +39,7 @@ io.on("connection", (socket) => {
   socket.on("message", (message) => {
     io.to(message.room).emit("message", message);
   });
-  socket.on("disconnect", () => console.log("User disconnected"));
+  // socket.on("disconnect", () => console.log("User disconnected"));
 });
 
 //Importing route files
