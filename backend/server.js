@@ -29,17 +29,22 @@ app.use(express.json());
 io.on("connection", (socket) => {
   socket.on("joinRoom", ({ user, room }) => {
     socket.join(room);
+    socket.username = user.name; //We gave the sockets a username property so that we could use it to identify which user just disconnected
+    socket.room = room;
     socket.broadcast
-      .to(room)
+      .to(socket.room)
       .emit("welcomeUser", `${user.name} has joined the room`);
   });
   socket.on("leaveRoom", (room) => {
-    socket.leave(room);
+    socket.broadcast
+      .to(socket.room)
+      .emit("welcomeUser", `${socket.username} has left the room`);
+    socket.leave(socket.room);
   });
   socket.on("message", (message) => {
     io.to(message.room).emit("message", message);
   });
-  // socket.on("disconnect", () => console.log("User disconnected"));
+  socket.on("disconnect", () => console.log(`${socket.username} disconnected`));
 });
 
 //Importing route files

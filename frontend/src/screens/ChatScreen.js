@@ -38,7 +38,7 @@ const ChatScreen = (props) => {
   ]);
 
   const leaveRoom = () => {
-    socket.emit("leaveRoom", room);
+    // socket.emit("leaveRoom", room); //we don't need to emit leaveroom because the cleanup function in our chat component already accomplishes this task
     props.history.push("/");
   };
   useEffect(() => {
@@ -69,12 +69,6 @@ const ChatScreen = (props) => {
   useEffect(() => {
     messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
   });
-
-  // useEffect(() => console.log(props));
-
-  // useEffect(() => {
-  //   socket.emit("joinRoom", room);
-  // }, [room]);
 
   return (
     <div style={style.container}>
