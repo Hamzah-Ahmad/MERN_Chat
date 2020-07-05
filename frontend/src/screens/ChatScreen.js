@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
 const socket = io("http://localhost:5000");
 import { AuthContext } from "../context/AuthContext";
@@ -14,6 +14,7 @@ const ChatScreen = (props) => {
   );
   const [message, setMessage] = useState("");
   const room = props.match.params.room;
+  const messagesRef = useRef();
   const submitHandler = (e) => {
     e.preventDefault();
     socket.emit("message", { user, message, room });
@@ -45,6 +46,7 @@ const ChatScreen = (props) => {
         ...messages,
         { user: message.user, message: message.message },
       ]);
+      messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
     });
     socket.on("welcomeUser", (msg) => console.log(msg));
     return () => {
@@ -73,7 +75,7 @@ const ChatScreen = (props) => {
         </div>
       </div>
       <div style={style.chatContainer}>
-        <div style={style.messagesContainer}>
+        <div style={style.messagesContainer} ref={messagesRef}>
           {messages.map((msg) => (
             <ChatBubble
               key={Math.random()}
