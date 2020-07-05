@@ -21,7 +21,7 @@ const ChatScreen = (props) => {
   const messagesRef = useRef();
   const submitHandler = (e) => {
     e.preventDefault();
-    socket.emit("message", { user, message, room });
+    socket.emit("message", { user, message });
     setMessage("");
   };
   const [messages, setMessages] = useState([
@@ -61,7 +61,7 @@ const ChatScreen = (props) => {
       }, 2000);
     });
     return () => {
-      socket.emit("leaveRoom", room);
+      socket.emit("leaveRoom");
       mounted = false;
     };
   }, []);

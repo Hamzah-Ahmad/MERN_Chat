@@ -30,21 +30,26 @@ io.on("connection", (socket) => {
   socket.on("joinRoom", ({ user, room }) => {
     socket.join(room);
     socket.username = user.name; //We gave the sockets a username property so that we could use it to identify which user just disconnected
-    socket.room = room;
+    socket.chatroom = room;
     socket.broadcast
-      .to(socket.room)
+      .to(socket.chatroom)
       .emit("welcomeUser", `${user.name} has joined the room`);
   });
-  socket.on("leaveRoom", (room) => {
+  socket.on("leaveRoom", () => {
     socket.broadcast
-      .to(socket.room)
+      .to(socket.chatroom)
       .emit("welcomeUser", `${socket.username} has left the room`);
-    socket.leave(socket.room);
+    socket.leave(socket.chatroom);
   });
   socket.on("message", (message) => {
-    io.to(message.room).emit("message", message);
+    io.to(socket.chatroom).emit("message", message);
   });
-  socket.on("disconnect", () => console.log(`${socket.username} disconnected`));
+  socket.on("disconnect", () => {
+    socket.broadcast
+      .to(socket.chatroom)
+      .emit("welcomeUser", `${socket.username} has disconnected.`);
+    socket.leave(socket.chatroom);
+  });
 });
 
 //Importing route files
