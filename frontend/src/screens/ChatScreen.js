@@ -7,17 +7,18 @@ import ChatBubble from "../components/ChatBubble";
 
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 const ChatScreen = (props) => {
   const { isLoggedIn, token, user, loginFunc, logoutFunc } = useContext(
     AuthContext
   );
   const [message, setMessage] = useState("");
-  const [alertText, setAlertText] = useState(
-    "Hamzah Ahmad has joined the chat"
-  );
+  const [alertText, setAlertText] = useState("");
   const [alertOpacity, setAlertOpacity] = useState(0);
   const room = props.match.params.room;
+  const mediaMatch = useMediaQuery("(min-width:700px)");
+
   const messagesRef = useRef();
   const submitHandler = (e) => {
     e.preventDefault();
@@ -71,7 +72,7 @@ const ChatScreen = (props) => {
   });
 
   return (
-    <div style={style.container}>
+    <div style={mediaMatch ? style.container : null}>
       <div style={style.navbar}>
         <div style={style.logo}>ChatRoomz</div>
         <div>
@@ -86,7 +87,22 @@ const ChatScreen = (props) => {
       <div style={{ ...style.alertBox, opacity: alertOpacity }}>
         {alertText}
       </div>
-      <div style={style.chatContainer}>
+      <div
+        style={
+          mediaMatch
+            ? style.chatContainer
+            : {
+                display: "flex",
+                flexDirection: "column",
+                // width: "60%",
+                padding: 10,
+                margin: "auto",
+                borderRadius: 20,
+                backgroundColor: "#edf4ff",
+                height: "70vh",
+              }
+        }
+      >
         <div style={style.messagesContainer} ref={messagesRef}>
           {messages.map((msg) => (
             <ChatBubble
@@ -180,7 +196,7 @@ const style = {
   navbar: {
     display: "flex",
     justifyContent: "space-around",
-    alignItems: "end",
+    alignItems: "baseline",
     padding: "30px 0px",
   },
 };

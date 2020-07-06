@@ -6,11 +6,14 @@ import { AuthContext } from "../context/AuthContext";
 
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 const HomeScreen = (props) => {
   const { isLoggedIn, token, user, loginFunc, logoutFunc } = useContext(
     AuthContext
   );
+  const mediaMatch = useMediaQuery("(min-width:700px)");
+
   // let [room, setRoom] = useState("General");
   const [textInput, setTextInput] = useState("");
   const [selectInput, setSelectInput] = useState("General");
@@ -21,6 +24,7 @@ const HomeScreen = (props) => {
     // room = room.split(" ").join("_");
     // console.log(room);
     // props.history.push(`chat/${room}`);
+
     let room;
     if (textInput) {
       room = textInput;
@@ -33,14 +37,20 @@ const HomeScreen = (props) => {
 
   // useEffect(() => console.log(room));
   return (
-    <div style={style.container}>
+    <div style={mediaMatch ? style.container : null}>
       <div style={style.navbar}>
         <div style={style.logo}>ChatRoomz</div>
         <Button onClick={logoutFunc} style={{ color: "#fff" }}>
           Logout
         </Button>
       </div>
-      <div style={style.formContainer}>
+      <div
+        style={
+          mediaMatch
+            ? { ...style.formContainer, width: "50%" }
+            : style.formContainer
+        }
+      >
         <form>
           <div>Select a room:</div>
           <select
@@ -90,7 +100,6 @@ const style = {
   formContainer: {
     display: "flex",
     flexDirection: "column",
-    width: "50%",
     padding: 70,
     margin: "auto",
     marginTop: 100,
@@ -106,8 +115,8 @@ const style = {
   navbar: {
     display: "flex",
     justifyContent: "space-around",
-    alignItems: "end",
     padding: "30px 0px",
+    alignItems: "baseline",
   },
   select: {
     display: "block",
