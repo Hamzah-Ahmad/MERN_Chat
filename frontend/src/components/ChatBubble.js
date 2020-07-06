@@ -21,7 +21,7 @@ const style = {
   sentMsgBubble: {
     marginBottom: 20,
     padding: 10,
-    border: "0.1px solid red",
+    border: "0.1px solid #324a7a",
     borderRadius: "20px",
     width: "60%",
     marginLeft: "auto",

@@ -39,7 +39,7 @@ const HomeScreen = (props) => {
   return (
     <div style={mediaMatch ? style.container : null}>
       <div style={style.navbar}>
-        <div style={style.logo}>ChatRoomz</div>
+        <div style={style.logo}>MernChat</div>
         <Button onClick={logoutFunc} style={{ color: "#fff" }}>
           Logout
         </Button>

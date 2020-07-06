@@ -8,7 +8,8 @@ const HTTPError = require("../models/http-error");
 
 router.post("/register", async (req, res, next) => {
   const { name, email, password } = req.body;
-  let newUser = await User.findOne({ email });
+  let emailVar = email.toLowerCase();
+  let newUser = await User.findOne({ email: emailVar });
 
   if (newUser) return res.status(400).json({ msg: "User already exists" }); //returning a status of 400 will trigger the catch statement in axios in the front end
   // if (newUser) {
@@ -25,7 +26,7 @@ router.post("/register", async (req, res, next) => {
 
   newUser = await User.create({
     name,
-    email,
+    email: emailVar,
     password: hashedPassword,
   });
 
@@ -58,7 +59,9 @@ router.post("/register", async (req, res, next) => {
 
 router.post("/login", async (req, res, next) => {
   const { email, password } = req.body;
-  let user = await User.findOne({ email });
+  let emailVar = email.toLowerCase();
+
+  let user = await User.findOne({ email: emailVar });
   if (!user) return next(new HTTPError("Invalid credentials", 401));
 
   //Validate password

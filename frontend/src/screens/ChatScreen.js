@@ -18,6 +18,7 @@ const ChatScreen = (props) => {
   const [alertOpacity, setAlertOpacity] = useState(0);
   const room = props.match.params.room;
   const mediaMatch = useMediaQuery("(min-width:700px)");
+  const [messages, setMessages] = useState([]);
 
   const messagesRef = useRef();
   const submitHandler = (e) => {
@@ -25,18 +26,6 @@ const ChatScreen = (props) => {
     socket.emit("message", { user, message });
     setMessage("");
   };
-  const [messages, setMessages] = useState([
-    { user: { name: "User A" }, message: "User A here" },
-    { user: { name: "User A" }, message: "User A here" },
-    { user: { name: "User A" }, message: "User A here" },
-    { user: { name: "User A" }, message: "User A here" },
-    { user: { name: "User A" }, message: "User A here" },
-    { user: { name: "User A" }, message: "User A here" },
-    { user: { name: "User A" }, message: "User A here" },
-    { user: { name: "User A" }, message: "User A here" },
-    { user: { name: "User A" }, message: "User A here" },
-    { user: { name: "User A" }, message: "User A here" },
-  ]);
 
   const leaveRoom = () => {
     // socket.emit("leaveRoom", room); //we don't need to emit leaveroom because the cleanup function in our chat component already accomplishes this task
@@ -63,6 +52,7 @@ const ChatScreen = (props) => {
     });
     return () => {
       socket.emit("leaveRoom");
+
       mounted = false;
     };
   }, []);
@@ -73,9 +63,15 @@ const ChatScreen = (props) => {
 
   return (
     <div style={mediaMatch ? style.container : null}>
-      <div style={style.navbar}>
-        <div style={style.logo}>ChatRoomz</div>
-        <div>
+      <div style={mediaMatch ? style.navbar : null}>
+        <div
+          style={
+            mediaMatch ? style.logo : { ...style.logo, textAlign: "center" }
+          }
+        >
+          MernChat
+        </div>
+        <div style={!mediaMatch ? { textAlign: "center" } : null}>
           <Button onClick={leaveRoom} style={{ color: "#fff" }}>
             Leave Room
           </Button>
@@ -87,23 +83,9 @@ const ChatScreen = (props) => {
       <div style={{ ...style.alertBox, opacity: alertOpacity }}>
         {alertText}
       </div>
-      <div
-        style={
-          mediaMatch
-            ? style.chatContainer
-            : {
-                display: "flex",
-                flexDirection: "column",
-                // width: "60%",
-                padding: 10,
-                margin: "auto",
-                borderRadius: 20,
-                backgroundColor: "#edf4ff",
-                height: "70vh",
-              }
-        }
-      >
+      <div style={mediaMatch ? style.chatContainer : style.mobileChatContainer}>
         <div style={style.messagesContainer} ref={messagesRef}>
+          <div style={style.roomTitle}>{room}:</div>
           {messages.map((msg) => (
             <ChatBubble
               key={Math.random()}
@@ -157,7 +139,7 @@ const style = {
     display: "flex",
     flexDirection: "column",
     width: "60%",
-    padding: 60,
+    padding: 40,
     margin: "auto",
     borderRadius: 20,
     backgroundColor: "#edf4ff",
@@ -192,12 +174,30 @@ const style = {
     background: "#f7f7f7",
     display: "flex",
     flexDirection: "column",
+    minHeight: "30vh",
+  },
+  mobileChatContainer: {
+    display: "flex",
+    flexDirection: "column",
+    width: "80vw",
+    padding: 10,
+    margin: "auto",
+    borderRadius: 20,
+    backgroundColor: "#edf4ff",
+    height: "70vh",
   },
   navbar: {
     display: "flex",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
     alignItems: "baseline",
     padding: "30px 0px",
+  },
+  roomTitle: {
+    color: "gray",
+    textAlign: "center",
+    marginTop: 0,
+    paddingTop: 0,
+    marginBottom: 10,
   },
 };
 

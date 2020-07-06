@@ -3,9 +3,11 @@ const http = require("http");
 const cors = require("cors");
 const socketio = require("socket.io");
 const mongoose = require("mongoose");
+const path = require("path");
 //Initializing variables
 const app = express();
 app.use(cors());
+require("dotenv").config();
 
 const server = http.createServer(app);
 const io = socketio(server);
@@ -15,7 +17,7 @@ const PORT = process.env.PORT || 5000;
 
 //Connecting to DB
 mongoose.connect(
-  "mongodb+srv://Hamzah:Haz1996@cluster0-20vtk.mongodb.net/mern_chat?retryWrites=true&w=majority",
+  process.env.DB,
   { useNewUrlParser: true, useUnifiedTopology: true },
   () => console.log("Connected to DB")
 );
@@ -64,5 +66,13 @@ app.use((error, req, res, next) => {
     .status(error.code || 500)
     .json({ msg: error.message || "An error has occured" });
 });
+
+//Serve static assets if in production
+if (process.env.NODE_ENV === "production") {
+  //set static folder
+  app.use(express.static("frontend/build"));
+
+  app.get("*", (req, res) => {});
+}
 
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));

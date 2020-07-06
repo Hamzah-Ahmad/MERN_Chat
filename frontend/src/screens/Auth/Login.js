@@ -8,7 +8,7 @@ import { AuthContext } from "../../context/AuthContext";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 
-const Login = ({ history, mediaMatch }) => {
+const Login = ({ history, mediaMatch, setBackDrop }) => {
   const [error, setError] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,8 +19,15 @@ const Login = ({ history, mediaMatch }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setError("");
+    if (email == "" || password == "") {
+      setError({ msg: "Fields cannot be empty" });
+      return;
+    }
+
     let body = { email, password };
     body = JSON.stringify(body);
+    setBackDrop(true);
     axios
       .post("/auth/login", body, {
         headers: {
@@ -34,6 +41,7 @@ const Login = ({ history, mediaMatch }) => {
       })
       .catch((err) => {
         console.log(err);
+        setBackDrop(false);
         setError(err.response.data);
       });
 
@@ -42,6 +50,7 @@ const Login = ({ history, mediaMatch }) => {
   };
 
   useEffect(() => {
+    // console.log(isLoggedIn);
     if (isLoggedIn) {
       history.push("/");
     }
@@ -54,7 +63,7 @@ const Login = ({ history, mediaMatch }) => {
         <TextField
           style={style.textField}
           variant="outlined"
-          type="text"
+          type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"

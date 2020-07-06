@@ -1,25 +1,31 @@
-/* eslint-disable */
-
 import axios from "axios";
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 
 // Material UI imports
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 
-const Register = ({ history, mediaMatch }) => {
+const Register = ({ history, mediaMatch, setBackDrop }) => {
   const [name, setName] = useState("");
   const [error, setError] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { isLoggedIn, token, user, loginFunc, logoutFunc } = useContext(
-    AuthContext
-  );
+  const { loginFunc } = useContext(AuthContext);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setError("");
+    if (name === "" || email === "" || password === "") {
+      setError({ msg: "Fields cannot be empty" });
+      return;
+    }
+
+    if (password.length < 5) {
+      setError({ msg: "Password must be atleast3 characters long" });
+      return;
+    }
     let body = { name, email, password };
     body = JSON.stringify(body);
 
@@ -35,19 +41,11 @@ const Register = ({ history, mediaMatch }) => {
         history.push("/");
       })
       .catch((err) => {
-        // console.log(body);
         console.log(err.response.data);
         setError(err.response.data);
       });
-
-    // setEmail("");
-    // setPassword("");
   };
-  useEffect(() => {
-    if (isLoggedIn) {
-      history.push("/");
-    }
-  }, []);
+
   return (
     <div style={mediaMatch ? style.container : style.mobileContainer}>
       <div style={mediaMatch ? style.title : style.mobileTitle}>Register</div>
@@ -65,7 +63,7 @@ const Register = ({ history, mediaMatch }) => {
         <TextField
           style={style.textField}
           variant="outlined"
-          type="text"
+          type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
@@ -78,6 +76,7 @@ const Register = ({ history, mediaMatch }) => {
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
         />
+
         <Button
           variant="contained"
           color="primary"
@@ -122,7 +121,6 @@ const style = {
   mobileContainer: {
     borderRadius: 10,
     padding: 25,
-    margin: 0,
     width: "80vw",
     margin: "0 auto",
     backgroundColor: "#f2f2f2",

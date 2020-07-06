@@ -4,19 +4,38 @@ import React from "react";
 import Login from "./Login";
 import Register from "./Register";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import Backdrop from "@material-ui/core/Backdrop";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const AuthScreen = ({ history }) => {
+  const [showBackdrop, setBackDrop] = React.useState(false);
   const mediaMatch = useMediaQuery("(min-width:760px)");
+
   return (
     <div style={mediaMatch ? style.container : style.mobileContainer}>
-      <Login history={history} mediaMatch={mediaMatch} />
+      <Backdrop style={style.backdrop} open={showBackdrop}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
 
-      <Register history={history} mediaMatch={mediaMatch} />
+      <Login
+        history={history}
+        mediaMatch={mediaMatch}
+        setBackDrop={setBackDrop}
+      />
+      <Register
+        history={history}
+        mediaMatch={mediaMatch}
+        setBackDrop={setBackDrop}
+      />
     </div>
   );
 };
 
 const style = {
+  backdrop: {
+    zIndex: 1,
+    color: "#fff",
+  },
   container: {
     display: "flex",
     justifyContent: "space-around",
